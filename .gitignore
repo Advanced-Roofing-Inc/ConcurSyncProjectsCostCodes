@@ -68,3 +68,5 @@ packages/
 *.testsettings
 
 ConcurSyncProjectsCostCodes/App.config
+*.suo
+*.suo
