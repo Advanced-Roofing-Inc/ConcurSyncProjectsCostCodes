@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Configuration;
-using System.Data.SqlClient;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using RestSharp;
-using RestSharp.Deserializers;
 using System.Collections.Generic;
+using System.Configuration;
 
 namespace ConcurSyncProjectsCostCodes
 {
@@ -16,7 +9,7 @@ namespace ConcurSyncProjectsCostCodes
       static void Main(string[] args)
       {
          // Connect to SL database
-         Console.Write("Connecting to SL database... ");
+         Console.WriteLine("Connecting to SL database... ");
          var connectionString = ConfigurationManager.ConnectionStrings["SL"].ConnectionString;
          var dataSource = new DataSource(connectionString);
 
@@ -26,23 +19,25 @@ namespace ConcurSyncProjectsCostCodes
          Project.MapCostCodesToProjectList(activeProjectList, costCodeList);
 
          // Connect to Concur service
-         Console.Write("Getting access token from Concur service...");
-         var concurUsername = ConfigurationManager.AppSettings["ConcurUsername"];
-         var concurPassword = ConfigurationManager.AppSettings["ConcurPassword"];
+         Console.WriteLine("Getting access token from Concur service...");
+         var username = ConfigurationManager.AppSettings["ConcurUsername"];
+         var password = ConfigurationManager.AppSettings["ConcurPassword"];
          var consumerKey = ConfigurationManager.AppSettings["ConcurConsumerKey"];
 
-         var uri = "http://www.concursolutions.com/api/expense/list/v1.0/";
+         // Get access token from Concur API
+         var concur = new ConcurApi(username, password, consumerKey);
 
-         var client = new RestClient("https://www.concursolutions.com/net2/oauth2/accesstoken.ashx");
-         client.Authenticator = new HttpBasicAuthenticator(concurUsername, concurPassword);
-         client.AddDefaultHeader("X-ConsumerKey", consumerKey);
-         
-         var request = new RestRequest("", Method.GET);
-         request.AddHeader("Accept", "application/xml");
-         
-         var response = client.Execute(request);
-         var deserializer = new XmlDeserializer();
-         AccessToken token = deserializer.Deserialize<AccessToken>(response);
+         var concurProjectListUrl = ConfigurationManager.AppSettings["ProjectListUrl"];
+
+         // Fetch list of projects currently in Concur
+         Console.WriteLine("Fetching list of projects from Concur API...");
+         var concurProjectList = concur.FetchProjectList(concurProjectListUrl);
+
+         // Find projects to be deleted
+         var projectsToDelete = Project.CreateListToDelete(concurProjectList, activeProjectList);
+
+         var response = concur.DeleteItems(concurProjectListUrl, projectsToDelete);
+         Console.WriteLine(response.Content);
 
          Console.ReadKey();
       }

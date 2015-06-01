@@ -48,8 +48,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccessToken.cs" />
+    <Compile Include="ConcurApi.cs" />
     <Compile Include="CostCode.cs" />
     <Compile Include="DataSource.cs" />
+    <Compile Include="ListItem.cs" />
+    <Compile Include="ListItems.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

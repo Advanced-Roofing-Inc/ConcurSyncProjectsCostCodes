@@ -25,7 +25,7 @@ namespace ConcurSyncProjectsCostCodes
             {
                var project = new Project
                {
-                  Number = reader["project"].ToString(),
+                  Number = reader["project"].ToString().Trim(),
                   Description = reader["project_desc"].ToString(),
                   CostCodes = new List<CostCode>()
                };
@@ -51,6 +51,32 @@ namespace ConcurSyncProjectsCostCodes
                }
             }
          }
+      }
+
+      public static ListItems CreateListToDelete(List<Project> oldItems, List<Project> newItems)
+      {
+         var listItems = new ListItems { Items = new List<ListItem>() };
+
+         foreach (var oldItem in oldItems)
+         {
+            var found = false;
+
+            foreach (var newItem in newItems)
+            {
+               if (oldItem.Number.Equals(newItem.Number))
+               {
+                  found = true;
+                  break;
+               }
+            }
+
+            if (!found)
+            {
+               listItems.Items.Add(new ListItem { Level1Code = oldItem.Number });
+            }
+         }
+
+         return listItems;
       }
    }
 }

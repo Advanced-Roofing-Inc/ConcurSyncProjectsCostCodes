@@ -25,7 +25,7 @@ namespace ConcurSyncProjectsCostCodes
             {
                var costCode = new CostCode
                {
-                  Entity = reader["pjt_entity"].ToString(),
+                  Entity = reader["pjt_entity"].ToString().Trim(),
                   Description = reader["pjt_entity_desc"].ToString(),
                   ProjectNumber = reader["project"].ToString()
                };
