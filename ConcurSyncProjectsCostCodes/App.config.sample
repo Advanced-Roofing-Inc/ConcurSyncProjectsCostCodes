@@ -5,11 +5,13 @@
     </startup>
 
    <connectionStrings>
-      <add name="SL" connectionString="Server=servername;Database=database;user id=username;Password=password" />
+      <add name="SL" connectionString="Server=servername;Database=database;Integrated Security=true" />
    </connectionStrings>
 
    <appSettings>
-      <add key="ConcurApiConsumerKey" value="consumer key" />
-      <add key="ConcurApiConsumerSecret" value="consumer secret" />
+      <add key="ConcurUsername" value="Concur email address" />
+      <add key="ConcurPassword" value="password" />
+      <add key="ConcurConsumerKey" value="consumer key" />
+      <add key="ProjectListUrl" value="https://www.concursolutions.com/api/expense/list/v1.0/{itemListId}" />
    </appSettings>
 </configuration>

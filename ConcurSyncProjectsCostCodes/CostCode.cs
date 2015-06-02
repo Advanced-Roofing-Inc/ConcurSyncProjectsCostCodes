@@ -15,7 +15,7 @@ namespace ConcurSyncProjectsCostCodes
 
          using (var connection = dataSource.CreateConnection())
          {
-            var sqlText = "SELECT pjt_entity, pjt_entity_desc, project FROM PJPENT";
+            var sqlText = "select pjt_entity, pjt_entity_desc, pjpent.project from PJPENT inner join PJPROJ on pjpent.project = pjproj.project and pjproj.status_pa = 'A'";
             var sqlCommand = new SqlCommand(sqlText, connection);
 
             SqlDataReader reader = null;
@@ -27,7 +27,7 @@ namespace ConcurSyncProjectsCostCodes
                {
                   Entity = reader["pjt_entity"].ToString().Trim(),
                   Description = reader["pjt_entity_desc"].ToString(),
-                  ProjectNumber = reader["project"].ToString()
+                  ProjectNumber = reader["project"].ToString().Trim()
                };
 
                costCodeList.Add(costCode);
@@ -39,5 +39,6 @@ namespace ConcurSyncProjectsCostCodes
 
          return costCodeList;
       }
+
    }
 }

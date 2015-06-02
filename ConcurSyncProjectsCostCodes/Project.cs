@@ -59,24 +59,78 @@ namespace ConcurSyncProjectsCostCodes
 
          foreach (var oldItem in oldItems)
          {
-            var found = false;
-
-            foreach (var newItem in newItems)
-            {
-               if (oldItem.Number.Equals(newItem.Number))
-               {
-                  found = true;
-                  break;
-               }
-            }
-
-            if (!found)
+            if (!newItems.Exists(p => p.Number == oldItem.Number))
             {
                listItems.Items.Add(new ListItem { Level1Code = oldItem.Number });
             }
          }
 
          return listItems;
+      }
+
+      public static ListItems CreateListToAdd(List<Project> oldItems, List<Project> newItems)
+      {
+         var itemsToAdd = new ListItems { Items = new List<ListItem>() };
+
+         foreach (var newItem in newItems)
+         {
+            if (!oldItems.Exists(p => p.Number == newItem.Number))
+            {
+               var listItem = new ListItem
+               {
+                  Level1Code = newItem.Number,
+                  Name = newItem.Description
+               };
+
+               itemsToAdd.Items.Add(listItem);
+            }
+         }
+
+         return itemsToAdd;
+      }
+
+      public List<ListItem> GetCostCodesToDelete(List<CostCode> oldCostCodes)
+      {
+         var costCodesToDelete = new List<ListItem>();
+
+         foreach (var costCode in oldCostCodes)
+         {
+            if (!this.CostCodes.Exists(cc => cc.Entity == costCode.Entity))
+            {
+               var listItem = new ListItem
+               {
+                  Level1Code = costCode.ProjectNumber,
+                  Level2Code = costCode.Entity
+               };
+
+               costCodesToDelete.Add(listItem);
+            }
+         }
+
+         return costCodesToDelete;
+      }
+
+
+      public List<ListItem> GetCostCodesToAdd(List<CostCode> oldCostCodes)
+      {
+         var costCodesToAdd = new List<ListItem>();
+
+         foreach (var costCode in this.CostCodes)
+         {
+            if (!oldCostCodes.Exists(cc => cc.Entity == costCode.Entity))
+            {
+               var listItem = new ListItem
+               {
+                  Level1Code = costCode.ProjectNumber,
+                  Level2Code = costCode.Entity,
+                  Name = costCode.Description
+               };
+
+               costCodesToAdd.Add(listItem);
+            }
+         }
+
+         return costCodesToAdd;
       }
    }
 }
