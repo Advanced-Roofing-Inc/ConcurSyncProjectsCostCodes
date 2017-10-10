@@ -1,6 +1,8 @@
 ﻿using RestSharp;
+using RestSharp.Authenticators;
 using RestSharp.Deserializers;
 using System.Collections.Generic;
+using System.Net;
 
 namespace ConcurSyncProjectsCostCodes
 {
@@ -13,6 +15,9 @@ namespace ConcurSyncProjectsCostCodes
          var client = new RestClient("https://www.concursolutions.com/net2/oauth2/accesstoken.ashx");
          client.Authenticator = new HttpBasicAuthenticator(username, password);
          client.AddDefaultHeader("X-ConsumerKey", consumerKey);
+
+         // Force TLS 1.2, default TLS 1.0 support dropped Oct 2017
+         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
          var request = new RestRequest();
          request.AddHeader("Accept", "application/xml");
